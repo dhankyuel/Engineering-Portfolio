@@ -190,7 +190,7 @@
   }
   .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-1px); }
 
-  /* rocket launch signature */
+  /* rocket engine static fire signature */
   .launchpad{
     position:relative;
     width:100%;
@@ -200,38 +200,25 @@
   }
   .launchpad svg{ width:100%; height:100%; display:block; }
 
-  #rocketGroup{ transform-origin:170px 300px; }
-  .launchpad.launching #rocketGroup{
-    animation:liftoff 1.5s cubic-bezier(.5,0,.85,.4) forwards;
-  }
-  @keyframes liftoff{
-    0%{ transform:translateY(0); opacity:1; }
-    85%{ opacity:1; }
-    100%{ transform:translateY(-280px); opacity:0; }
-  }
-
   #flame{
-    opacity:0;
     transform-origin:170px 285px;
-    transition:opacity .15s ease;
-  }
-  .launchpad.active #flame{
-    opacity:1;
-    animation:flicker .12s infinite alternate;
+    animation:flicker .11s infinite alternate;
   }
   @keyframes flicker{
-    from{ transform:scaleY(1) scaleX(1); }
-    to{ transform:scaleY(1.18) scaleX(0.9); }
+    0%{ transform:scaleY(1) scaleX(1); opacity:.92; }
+    50%{ transform:scaleY(1.22) scaleX(0.88); opacity:1; }
+    100%{ transform:scaleY(1.08) scaleX(0.96); opacity:.96; }
   }
 
-  .smoke-puff{ fill:var(--line); opacity:0; }
-  .launchpad.active .smoke-puff{
-    animation:puff 1.3s ease-out forwards;
+  .smoke-puff{
+    fill:var(--line);
+    opacity:0;
+    animation:puff 2.2s ease-out infinite;
   }
   @keyframes puff{
     0%{ opacity:0; transform:translateY(0) scale(0.6); }
-    18%{ opacity:.55; }
-    100%{ opacity:0; transform:translateY(-42px) scale(1.7); }
+    12%{ opacity:.5; }
+    100%{ opacity:0; transform:translateY(-46px) scale(1.8); }
   }
 
   .launch-readout{
@@ -239,7 +226,7 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:14px;
+    gap:8px;
   }
   .instrument-label{
     font-family:var(--font-mono);
@@ -249,22 +236,27 @@
     text-transform:uppercase;
     white-space:nowrap;
   }
-  .launch-btn{
-    font-family:var(--font-mono);
-    font-size:12px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    padding:10px 22px;
-    border:1px solid var(--line);
-    background:transparent;
-    color:var(--ink);
-    border-radius:2px;
-    cursor:pointer;
-    transition:border-color .2s ease, color .2s ease, transform .15s ease;
+  .instrument-label.primary{ color:var(--ink); }
+  .instrument-label .dot{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--beacon);
+    margin-right:7px;
+    animation:pulse 1.4s ease-in-out infinite;
   }
-  .launch-btn:hover{ border-color:var(--beacon); color:var(--beacon); }
-  .launch-btn:active{ transform:translateY(1px); }
-  .launch-btn:disabled{ opacity:.45; cursor:default; }
+  @keyframes pulse{
+    0%, 100%{ opacity:1; }
+    50%{ opacity:.35; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #flame{ animation:none; transform:none; opacity:1; }
+    .smoke-puff{ animation:none; opacity:.35; }
+    .instrument-label .dot{ animation:none; }
+  }
+
 
   /* ---------- data strip ---------- */
   .datastrip{
@@ -573,7 +565,7 @@
           <!-- ground -->
           <line x1="20" y1="300" x2="320" y2="300" stroke="#D9DCDD" stroke-width="1"/>
 
-          <!-- gantry -->
+          <!-- test stand truss -->
           <g stroke="#B9C2CB" stroke-width="1.2">
             <line x1="248" y1="80" x2="248" y2="300"/>
             <line x1="248" y1="110" x2="270" y2="110"/>
@@ -582,31 +574,37 @@
             <line x1="248" y1="230" x2="266" y2="230"/>
           </g>
 
-          <!-- pad -->
-          <rect x="140" y="298" width="60" height="6" fill="#E4E1D6" stroke="#10202B" stroke-width="1"/>
-
-          <!-- smoke -->
-          <g id="smokeGroup">
-            <circle class="smoke-puff" cx="150" cy="300" r="6"/>
-            <circle class="smoke-puff" cx="170" cy="304" r="8" style="animation-delay:.08s"/>
-            <circle class="smoke-puff" cx="190" cy="300" r="6" style="animation-delay:.16s"/>
-            <circle class="smoke-puff" cx="160" cy="296" r="5" style="animation-delay:.24s"/>
-            <circle class="smoke-puff" cx="182" cy="296" r="5" style="animation-delay:.32s"/>
+          <!-- hold-down restraints -->
+          <g stroke="#2B4C7E" stroke-width="1.2">
+            <line x1="188" y1="200" x2="230" y2="180"/>
+            <line x1="188" y1="240" x2="230" y2="228"/>
           </g>
 
-          <!-- rocket -->
+          <!-- base -->
+          <rect x="140" y="298" width="60" height="6" fill="#E4E1D6" stroke="#10202B" stroke-width="1"/>
+
+          <!-- exhaust plume -->
+          <g id="smokeGroup">
+            <circle class="smoke-puff" cx="150" cy="300" r="6"/>
+            <circle class="smoke-puff" cx="170" cy="304" r="8" style="animation-delay:.4s"/>
+            <circle class="smoke-puff" cx="190" cy="300" r="6" style="animation-delay:.8s"/>
+            <circle class="smoke-puff" cx="160" cy="296" r="5" style="animation-delay:1.2s"/>
+            <circle class="smoke-puff" cx="182" cy="296" r="5" style="animation-delay:1.6s"/>
+          </g>
+
+          <!-- engine under test, fixed to stand -->
           <g id="rocketGroup">
             <path d="M170 160 C182 175 188 200 188 230 L188 285 L152 285 L152 230 C152 200 158 175 170 160 Z" fill="#FAFAF8" stroke="#10202B" stroke-width="1.6"/>
             <circle cx="170" cy="205" r="8" fill="none" stroke="#2B4C7E" stroke-width="1.6"/>
             <path d="M152 260 L134 285 L152 285 Z" fill="#2B4C7E"/>
             <path d="M188 260 L206 285 L188 285 Z" fill="#2B4C7E"/>
-            <path id="flame" d="M162 285 L170 318 L178 285 Z" fill="#C1272D"/>
+            <path id="flame" d="M160 285 L170 322 L180 285 Z" fill="#C1272D"/>
           </g>
         </svg>
       </div>
       <div class="launch-readout">
-        <span class="instrument-label" id="launchStatus">Status · Standby</span>
-        <button class="launch-btn" id="launchBtn" type="button">Initiate Launch</button>
+        <span class="instrument-label primary"><span class="dot"></span>Static Fire · Live</span>
+        <span class="instrument-label" id="thrustReadout">Thrust · 41.6 kN</span>
       </div>
     </div>
   </div>
@@ -776,51 +774,16 @@
 </footer>
 
 <script>
-  // rocket launch sequence
+  // ambient static-fire telemetry
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const launchpad = document.getElementById('launchpad');
-  const launchBtn = document.getElementById('launchBtn');
-  const statusEl = document.getElementById('launchStatus');
-  const rocketGroup = document.getElementById('rocketGroup');
-  let launching = false;
+  const thrustEl = document.getElementById('thrustReadout');
 
-  function resetStatus(){
-    if (statusEl) statusEl.textContent = 'Status · Standby';
-    launching = false;
-    if (launchBtn) launchBtn.disabled = false;
+  if (thrustEl && !reduceMotion) {
+    setInterval(() => {
+      const val = (40 + Math.random() * 3.5).toFixed(1);
+      thrustEl.textContent = `Thrust · ${val} kN`;
+    }, 550);
   }
-
-  function runLaunch(){
-    if (launching || !launchpad || !statusEl) return;
-    launching = true;
-    if (launchBtn) launchBtn.disabled = true;
-
-    if (reduceMotion) {
-      statusEl.textContent = 'Status · Liftoff';
-      setTimeout(resetStatus, 1400);
-      return;
-    }
-
-    const steps = ['T-minus 3', 'T-minus 2', 'T-minus 1'];
-    let i = 0;
-    statusEl.textContent = steps[i];
-    const countdown = setInterval(() => {
-      i++;
-      if (i < steps.length) {
-        statusEl.textContent = steps[i];
-      } else {
-        clearInterval(countdown);
-        statusEl.textContent = 'Status · Liftoff';
-        launchpad.classList.add('active', 'launching');
-        rocketGroup.addEventListener('animationend', () => {
-          launchpad.classList.remove('active', 'launching');
-          setTimeout(resetStatus, 300);
-        }, { once: true });
-      }
-    }, 700);
-  }
-
-  if (launchBtn) launchBtn.addEventListener('click', runLaunch);
 
   // scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
