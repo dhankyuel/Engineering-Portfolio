@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera — Aerospace Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAFAF8;
+    --paper-dim: #F2F1EC;
+    --ink: #10202B;
+    --blueprint: #2B4C7E;
+    --blueprint-soft: #6E86A6;
+    --steel: #66727D;
+    --beacon: #C1272D;
+    --line: #D9DCDD;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  ::selection{ background:var(--beacon); color:var(--paper); }
+
+  /* ---------- corner registration marks ---------- */
+  .section{
+    position:relative;
+    border-top:1px solid var(--line);
+    padding:96px 0;
+  }
+  .section::before,
+  .section::after{
+    content:"";
+    position:absolute;
+    top:-6px;
+    width:14px;
+    height:14px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E86A6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2c2.2 2.3 3.4 5.6 3.4 8.8 0 2.3-1.1 4.5-3.4 6.7-2.3-2.2-3.4-4.4-3.4-6.7C8.6 7.6 9.8 4.3 12 2z'/%3E%3Cpath d='M8.6 13.5 6 17M15.4 13.5 18 17'/%3E%3Cpath d='M12 17.5v3.5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-size:contain;
+  }
+  .section::before{ left:32px; }
+  .section::after{ right:32px; transform:scaleX(-1); }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blueprint);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:16px;
+    height:1px;
+    background:var(--beacon);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(250,250,248,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px;
+  }
+  .callsign{
+    font-family:var(--font-mono);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .callsign span{ color:var(--beacon); }
+  .navlinks{
+    display:flex;
+    gap:28px;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .navlinks a{
+    color:var(--steel);
+    position:relative;
+    padding-bottom:3px;
+    transition:color .2s ease;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--ink); }
+  .navlinks a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:1px;
+    background:var(--beacon);
+    transition:width .25s ease;
+  }
+  .navlinks a:hover::after{ width:100%; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:88px 0 72px;
+    border-top:none;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:48px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(40px, 5.4vw, 68px);
+    line-height:1.03;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--blueprint);
+  }
+  .hero p.lede{
+    margin-top:22px;
+    max-width:46ch;
+    font-size:17px;
+    color:var(--steel);
+  }
+  .hero-actions{
+    display:flex;
+    gap:14px;
+    margin-top:32px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:13px 22px;
+    border-radius:2px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .15s ease, background .2s ease, color .2s ease;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .btn-primary:hover{ background:var(--beacon); transform:translateY(-1px); }
+  .btn-ghost{
+    border:1px solid var(--line);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-1px); }
+
+  /* rocket launch signature */
+  .launchpad{
+    position:relative;
+    width:100%;
+    max-width:340px;
+    aspect-ratio:1/1;
+    margin:0 auto;
+  }
+  .launchpad svg{ width:100%; height:100%; display:block; }
+
+  #rocketGroup{ transform-origin:170px 300px; }
+  .launchpad.launching #rocketGroup{
+    animation:liftoff 1.5s cubic-bezier(.5,0,.85,.4) forwards;
+  }
+  @keyframes liftoff{
+    0%{ transform:translateY(0); opacity:1; }
+    85%{ opacity:1; }
+    100%{ transform:translateY(-280px); opacity:0; }
+  }
+
+  #flame{
+    opacity:0;
+    transform-origin:170px 285px;
+    transition:opacity .15s ease;
+  }
+  .launchpad.active #flame{
+    opacity:1;
+    animation:flicker .12s infinite alternate;
+  }
+  @keyframes flicker{
+    from{ transform:scaleY(1) scaleX(1); }
+    to{ transform:scaleY(1.18) scaleX(0.9); }
+  }
+
+  .smoke-puff{ fill:var(--line); opacity:0; }
+  .launchpad.active .smoke-puff{
+    animation:puff 1.3s ease-out forwards;
+  }
+  @keyframes puff{
+    0%{ opacity:0; transform:translateY(0) scale(0.6); }
+    18%{ opacity:.55; }
+    100%{ opacity:0; transform:translateY(-42px) scale(1.7); }
+  }
+
+  .launch-readout{
+    margin-top:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+  .instrument-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    color:var(--steel);
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .launch-btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:10px 22px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    border-radius:2px;
+    cursor:pointer;
+    transition:border-color .2s ease, color .2s ease, transform .15s ease;
+  }
+  .launch-btn:hover{ border-color:var(--beacon); color:var(--beacon); }
+  .launch-btn:active{ transform:translateY(1px); }
+  .launch-btn:disabled{ opacity:.45; cursor:default; }
+
+  /* ---------- data strip ---------- */
+  .datastrip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .datastrip .wrap{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    padding:0;
+  }
+  .datastrip .cell{
+    padding:22px 24px;
+    border-left:1px solid var(--line);
+    font-family:var(--font-mono);
+  }
+  .datastrip .cell:first-child{ border-left:none; padding-left:0; }
+  .datastrip .num{
+    font-size:26px;
+    font-weight:600;
+    color:var(--ink);
+    font-family:var(--font-display);
+  }
+  .datastrip .label{
+    font-size:11px;
+    color:var(--steel);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-top:4px;
+  }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:64px;
+  }
+  .about-grid h2{ font-size:30px; margin-bottom:20px; }
+  .about-grid p{ color:var(--steel); margin-bottom:16px; max-width:56ch; }
+  .about-grid p strong{ color:var(--ink); font-weight:600; }
+  .spec-table{
+    font-family:var(--font-mono);
+    font-size:13px;
+  }
+  .spec-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    gap:16px;
+  }
+  .spec-row:first-child{ border-top:1px solid var(--line); }
+  .spec-key{ color:var(--steel); text-transform:uppercase; letter-spacing:0.06em; }
+  .spec-val{ text-align:right; }
+
+  /* ---------- projects ---------- */
+  .project-list{
+    display:grid;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-top:44px;
+  }
+  .project{
+    background:var(--paper);
+    padding:36px;
+    display:grid;
+    grid-template-columns:110px 1.1fr 1.3fr;
+    gap:32px;
+    align-items:start;
+    transition:background .2s ease;
+  }
+  .project:hover{ background:var(--paper-dim); }
+  .project-code{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--beacon);
+    padding-top:4px;
+  }
+  .project h3{
+    font-size:20px;
+    margin-bottom:10px;
+  }
+  .project p{
+    color:var(--steel);
+    font-size:14.5px;
+    max-width:48ch;
+  }
+  .project-specs{
+    font-family:var(--font-mono);
+    font-size:12px;
+  }
+  .project-specs .row{
+    display:flex;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .project-specs .row:last-child{ border-bottom:none; }
+  .project-specs .k{
+    color:var(--steel);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    min-width:70px;
+  }
+
+  /* ---------- skills ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:36px;
+    margin-top:40px;
+  }
+  .skill-col h4{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--blueprint);
+    margin-bottom:16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+  .skill-col ul{ list-style:none; }
+  .skill-col li{
+    font-size:14.5px;
+    padding:7px 0;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .skill-col li::before{
+    content:"";
+    width:5px; height:5px;
+    background:var(--beacon);
+    display:inline-block;
+    flex-shrink:0;
+  }
+
+  /* ---------- log / timeline ---------- */
+  .log{
+    margin-top:44px;
+    position:relative;
+  }
+  .log::before{
+    content:"";
+    position:absolute;
+    left:120px;
+    top:6px;
+    bottom:6px;
+    width:1px;
+    background:var(--line);
+  }
+  .log-entry{
+    display:grid;
+    grid-template-columns:104px 32px 1fr;
+    gap:0;
+    padding:22px 0;
+  }
+  .log-date{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--steel);
+    padding-top:3px;
+  }
+  .log-dot{
+    display:flex;
+    justify-content:center;
+    position:relative;
+  }
+  .log-dot span{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--paper);
+    border:2px solid var(--blueprint);
+    margin-top:5px;
+    z-index:1;
+  }
+  .log-body h4{
+    font-family:var(--font-display);
+    font-size:17px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .log-body .org{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--beacon);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin-bottom:8px;
+    display:block;
+  }
+  .log-body p{ color:var(--steel); font-size:14px; max-width:56ch; }
+
+  /* ---------- contact ---------- */
+  .contact{
+    text-align:left;
+  }
+  .contact h2{
+    font-size:clamp(32px, 4.5vw, 52px);
+    max-width:16ch;
+    margin-bottom:24px;
+  }
+  .contact-links{
+    display:flex;
+    gap:0;
+    flex-wrap:wrap;
+    margin-top:36px;
+    border-top:1px solid var(--line);
+  }
+  .contact-links a{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.05em;
+    padding:18px 26px 18px 0;
+    margin-right:26px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--ink);
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .contact-links a:hover{ color:var(--beacon); border-color:var(--beacon); }
+  .contact-links a::after{ content:"↗"; font-size:11px; }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 0;
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--steel);
+    display:flex;
+    justify-content:space-between;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px){
+    .wrap{ padding:0 20px; }
+    .navlinks{ display:none; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .launchpad{ max-width:220px; margin-top:24px; }
+    .about-grid{ grid-template-columns:1fr; gap:32px; }
+    .project{ grid-template-columns:1fr; gap:14px; }
+    .project-code{ padding-top:0; }
+    .skills-grid{ grid-template-columns:1fr 1fr; gap:28px; }
+    .datastrip .wrap{ grid-template-columns:1fr 1fr; }
+    .datastrip .cell:nth-child(3){ border-left:none; }
+    .datastrip .cell{ padding:18px; }
+    .log::before{ left:8px; }
+    .log-entry{ grid-template-columns:16px 1fr; }
+    .log-date{ display:none; }
+    .log-dot{ justify-content:flex-start; }
+    footer{ flex-direction:column; gap:6px; }
+  }
+
+  :focus-visible{ outline:2px solid var(--beacon); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="callsign">A. RIVERA <span>/ AE</span></div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#log">Log</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Aerospace Engineer — Structures &amp; Propulsion</div>
+      <h1>Building things<br>that leave <em>the ground.</em></h1>
+      <p class="lede">I design and validate structural and propulsion systems for small spacecraft and flight test vehicles — from CAD to CFD to the test stand.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View Projects</a>
+        <a class="btn btn-ghost" href="#contact">Get in Touch</a>
+      </div>
+    </div>
+    <div>
+      <div class="launchpad" id="launchpad">
+        <svg viewBox="0 0 340 340" aria-hidden="true">
+          <!-- ground -->
+          <line x1="20" y1="300" x2="320" y2="300" stroke="#D9DCDD" stroke-width="1"/>
+
+          <!-- gantry -->
+          <g stroke="#B9C2CB" stroke-width="1.2">
+            <line x1="248" y1="80" x2="248" y2="300"/>
+            <line x1="248" y1="110" x2="270" y2="110"/>
+            <line x1="248" y1="150" x2="266" y2="150"/>
+            <line x1="248" y1="190" x2="270" y2="190"/>
+            <line x1="248" y1="230" x2="266" y2="230"/>
+          </g>
+
+          <!-- pad -->
+          <rect x="140" y="298" width="60" height="6" fill="#E4E1D6" stroke="#10202B" stroke-width="1"/>
+
+          <!-- smoke -->
+          <g id="smokeGroup">
+            <circle class="smoke-puff" cx="150" cy="300" r="6"/>
+            <circle class="smoke-puff" cx="170" cy="304" r="8" style="animation-delay:.08s"/>
+            <circle class="smoke-puff" cx="190" cy="300" r="6" style="animation-delay:.16s"/>
+            <circle class="smoke-puff" cx="160" cy="296" r="5" style="animation-delay:.24s"/>
+            <circle class="smoke-puff" cx="182" cy="296" r="5" style="animation-delay:.32s"/>
+          </g>
+
+          <!-- rocket -->
+          <g id="rocketGroup">
+            <path d="M170 160 C182 175 188 200 188 230 L188 285 L152 285 L152 230 C152 200 158 175 170 160 Z" fill="#FAFAF8" stroke="#10202B" stroke-width="1.6"/>
+            <circle cx="170" cy="205" r="8" fill="none" stroke="#2B4C7E" stroke-width="1.6"/>
+            <path d="M152 260 L134 285 L152 285 Z" fill="#2B4C7E"/>
+            <path d="M188 260 L206 285 L188 285 Z" fill="#2B4C7E"/>
+            <path id="flame" d="M162 285 L170 318 L178 285 Z" fill="#C1272D"/>
+          </g>
+        </svg>
+      </div>
+      <div class="launch-readout">
+        <span class="instrument-label" id="launchStatus">Status · Standby</span>
+        <button class="launch-btn" id="launchBtn" type="button">Initiate Launch</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="datastrip">
+  <div class="wrap">
+    <div class="cell">
+      <div class="num">6</div>
+      <div class="label">Flight &amp; Test Projects</div>
+    </div>
+    <div class="cell">
+      <div class="num">3</div>
+      <div class="label">Years in Structures</div>
+    </div>
+    <div class="cell">
+      <div class="num">2</div>
+      <div class="label">Vehicles Flown</div>
+    </div>
+    <div class="cell">
+      <div class="num">B.S.</div>
+      <div class="label">Aerospace Eng.</div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <div class="eyebrow">About</div>
+      <h2>Grounded in mechanics,<br>aimed upward.</h2>
+      <p>I'm an aerospace engineer focused on the parts of a vehicle that have to survive contact with reality — load paths, thermal cycling, vibration, and the margins between an analysis and a test result.</p>
+      <p>Most recently I've worked on <strong>composite structures</strong> and <strong>small satellite propulsion</strong>, splitting time between simulation and the test bench, because neither one tells the whole story alone.</p>
+    </div>
+    <div class="reveal">
+      <div class="spec-table">
+        <div class="spec-row"><span class="spec-key">Focus</span><span class="spec-val">Structures / Propulsion</span></div>
+        <div class="spec-row"><span class="spec-key">Education</span><span class="spec-val">B.S. Aerospace Engineering</span></div>
+        <div class="spec-row"><span class="spec-key">Tools</span><span class="spec-val">SolidWorks, ANSYS, MATLAB</span></div>
+        <div class="spec-row"><span class="spec-key">Analysis</span><span class="spec-val">FEA, CFD, Structural Test</span></div>
+        <div class="spec-row"><span class="spec-key">Based</span><span class="spec-val">New York, NY</span></div>
+        <div class="spec-row"><span class="spec-key">Status</span><span class="spec-val">Open to opportunities</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="wrap">
+    <div class="eyebrow reveal">Selected Work</div>
+    <h2 class="reveal" style="font-size:30px;">Projects</h2>
+
+    <div class="project-list">
+      <div class="project reveal">
+        <div class="project-code">AX-01</div>
+        <div>
+          <h3>CubeSat Attitude Control System</h3>
+          <p>Designed and tuned a reaction-wheel ADCS for a 3U CubeSat, from control law to flight software integration.</p>
+        </div>
+        <div class="project-specs">
+          <div class="row"><span class="k">Role</span><span>Lead Controls Eng.</span></div>
+          <div class="row"><span class="k">Stack</span><span>MATLAB/Simulink, C, KiCad</span></div>
+          <div class="row"><span class="k">Result</span><span>±0.5° pointing accuracy achieved</span></div>
+        </div>
+      </div>
+
+      <div class="project reveal">
+        <div class="project-code">AX-02</div>
+        <div>
+          <h3>Composite Wing Spar Optimization</h3>
+          <p>Reduced spar mass 18% on a UAV wing through layup optimization while holding to the original load envelope.</p>
+        </div>
+        <div class="project-specs">
+          <div class="row"><span class="k">Role</span><span>Structures Engineer</span></div>
+          <div class="row"><span class="k">Stack</span><span>ANSYS ACP, SolidWorks</span></div>
+          <div class="row"><span class="k">Result</span><span>18% mass reduction, test verified</span></div>
+        </div>
+      </div>
+
+      <div class="project reveal">
+        <div class="project-code">AX-03</div>
+        <div>
+          <h3>Supersonic Nozzle CFD Study</h3>
+          <p>Characterized shock structure and thrust efficiency across nozzle expansion ratios for a student rocketry team.</p>
+        </div>
+        <div class="project-specs">
+          <div class="row"><span class="k">Role</span><span>Propulsion Analyst</span></div>
+          <div class="row"><span class="k">Stack</span><span>ANSYS Fluent, Python</span></div>
+          <div class="row"><span class="k">Result</span><span>4.2% gain in effective Isp</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="skills">
+  <div class="wrap">
+    <div class="eyebrow reveal">Capabilities</div>
+    <h2 class="reveal" style="font-size:30px;">Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-col reveal">
+        <h4>Structures</h4>
+        <ul>
+          <li>FEA (linear &amp; nonlinear)</li>
+          <li>Composite layup design</li>
+          <li>Fatigue &amp; fracture</li>
+          <li>Structural test planning</li>
+        </ul>
+      </div>
+      <div class="skill-col reveal">
+        <h4>Propulsion</h4>
+        <ul>
+          <li>CFD (RANS, compressible)</li>
+          <li>Nozzle &amp; combustor design</li>
+          <li>Thermal analysis</li>
+          <li>Static fire test support</li>
+        </ul>
+      </div>
+      <div class="skill-col reveal">
+        <h4>Avionics &amp; Controls</h4>
+        <ul>
+          <li>Control law design</li>
+          <li>Embedded C / RTOS</li>
+          <li>Sensor fusion</li>
+          <li>Hardware-in-the-loop test</li>
+        </ul>
+      </div>
+      <div class="skill-col reveal">
+        <h4>Tools</h4>
+        <ul>
+          <li>SolidWorks / CATIA</li>
+          <li>ANSYS / Fluent</li>
+          <li>MATLAB / Simulink</li>
+          <li>Python, Git</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="log">
+  <div class="wrap">
+    <div class="eyebrow reveal">Flight Log</div>
+    <h2 class="reveal" style="font-size:30px;">Experience</h2>
+    <div class="log">
+      <div class="log-entry reveal">
+        <div class="log-date">2025 — Now</div>
+        <div class="log-dot"><span></span></div>
+        <div class="log-body">
+          <h4>Structures Engineer</h4>
+          <span class="org">Orbital Test Systems</span>
+          <p>Own structural analysis and test campaigns for a small-satellite bus program, from concept through qualification test.</p>
+        </div>
+      </div>
+      <div class="log-entry reveal">
+        <div class="log-date">2023 — 2025</div>
+        <div class="log-dot"><span></span></div>
+        <div class="log-body">
+          <h4>Propulsion Intern</h4>
+          <span class="org">University Rocketry Team</span>
+          <p>Led CFD studies on nozzle geometry and supported static fire testing of a student-built liquid engine.</p>
+        </div>
+      </div>
+      <div class="log-entry reveal">
+        <div class="log-date">2022</div>
+        <div class="log-dot"><span></span></div>
+        <div class="log-body">
+          <h4>B.S. Aerospace Engineering</h4>
+          <span class="org">State University</span>
+          <p>Focused coursework in structures, propulsion, and controls; senior capstone on CubeSat ADCS design.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="eyebrow reveal">Get in Touch</div>
+    <h2 class="reveal">Open to new roles and interesting problems.</h2>
+    <div class="contact-links reveal">
+      <a href="mailto:alex.rivera@example.com">alex.rivera@example.com</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">GitHub</a>
+      <a href="#">Résumé (PDF)</a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 Alex Rivera</span>
+  <span>Aerospace Engineer — New York, NY</span>
+</footer>
+
+<script>
+  // rocket launch sequence
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const launchpad = document.getElementById('launchpad');
+  const launchBtn = document.getElementById('launchBtn');
+  const statusEl = document.getElementById('launchStatus');
+  const rocketGroup = document.getElementById('rocketGroup');
+  let launching = false;
+
+  function resetStatus(){
+    if (statusEl) statusEl.textContent = 'Status · Standby';
+    launching = false;
+    if (launchBtn) launchBtn.disabled = false;
+  }
+
+  function runLaunch(){
+    if (launching || !launchpad || !statusEl) return;
+    launching = true;
+    if (launchBtn) launchBtn.disabled = true;
+
+    if (reduceMotion) {
+      statusEl.textContent = 'Status · Liftoff';
+      setTimeout(resetStatus, 1400);
+      return;
+    }
+
+    const steps = ['T-minus 3', 'T-minus 2', 'T-minus 1'];
+    let i = 0;
+    statusEl.textContent = steps[i];
+    const countdown = setInterval(() => {
+      i++;
+      if (i < steps.length) {
+        statusEl.textContent = steps[i];
+      } else {
+        clearInterval(countdown);
+        statusEl.textContent = 'Status · Liftoff';
+        launchpad.classList.add('active', 'launching');
+        rocketGroup.addEventListener('animationend', () => {
+          launchpad.classList.remove('active', 'launching');
+          setTimeout(resetStatus, 300);
+        }, { once: true });
+      }
+    }, 700);
+  }
+
+  if (launchBtn) launchBtn.addEventListener('click', runLaunch);
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+</script>
+
+</body>
+</html>
