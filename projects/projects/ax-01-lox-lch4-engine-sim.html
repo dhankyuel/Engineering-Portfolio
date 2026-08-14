@@ -3,20 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CubeSat Attitude Control System — Daniel Yu</title>
+<title>Axisymmetric 2D LOX/LCH4 Engine Simulation — Daniel Yu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #FAFAF8;
-    --paper-dim: #F2F1EC;
-    --ink: #10202B;
-    --blueprint: #2B4C7E;
-    --blueprint-soft: #6E86A6;
-    --steel: #66727D;
-    --beacon: #C1272D;
-    --line: #D9DCDD;
+    --paper: #0A1B2E;
+    --panel: #0F2439;
+    --panel-hover: #143050;
+    --ink: #E9F1F8;
+    --blueprint: #7FB2E0;
+    --blueprint-dim: #4A7CA8;
+    --line: #1E3E5F;
+    --grid-line: rgba(127,178,224,0.07);
+    --steel: #7E93A8;
+    --beacon: #E2672E;
+    --beacon-dim: #B84F22;
     --font-display: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
@@ -25,7 +28,10 @@
   *{ margin:0; padding:0; box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
   body{
-    background:var(--paper);
+    background:
+      repeating-linear-gradient(0deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
+      var(--paper);
     color:var(--ink);
     font-family:var(--font-body);
     line-height:1.5;
@@ -64,6 +70,7 @@
     font-family:var(--font-display);
     font-weight:600;
     letter-spacing:-0.01em;
+    color:var(--ink);
   }
 
   /* ---------- nav ---------- */
@@ -71,7 +78,7 @@
     position:sticky;
     top:0;
     z-index:50;
-    background:rgba(250,250,248,0.88);
+    background:rgba(10,27,46,0.86);
     backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
   }
@@ -85,7 +92,7 @@
     font-family:var(--font-mono);
     font-size:14px;
     font-weight:600;
-    letter-spacing:0.02em;
+    letter-spacing:0.06em;
   }
   .callsign span{ color:var(--beacon); }
   .navlinks{
@@ -105,7 +112,7 @@
     align-items:center;
     gap:8px;
   }
-  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--ink); }
+  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--blueprint); }
   .navlinks a::after{
     content:"";
     position:absolute;
@@ -128,13 +135,13 @@
     margin-bottom:14px;
   }
   .project-hero h1{
-    font-size:clamp(32px, 4.5vw, 50px);
-    line-height:1.06;
-    max-width:18ch;
+    font-size:clamp(28px, 4vw, 44px);
+    line-height:1.12;
+    max-width:22ch;
   }
   .project-hero p.lede{
     margin-top:20px;
-    max-width:60ch;
+    max-width:62ch;
     font-size:17px;
     color:var(--steel);
   }
@@ -158,6 +165,7 @@
   .datastrip{
     border-top:1px solid var(--line);
     border-bottom:1px solid var(--line);
+    background:var(--panel);
   }
   .datastrip .wrap{
     display:grid;
@@ -173,7 +181,7 @@
   .datastrip .num{
     font-size:22px;
     font-weight:600;
-    color:var(--ink);
+    color:var(--blueprint);
     font-family:var(--font-display);
   }
   .datastrip .label{
@@ -212,7 +220,7 @@
   }
   .spec-row:first-child{ border-top:1px solid var(--line); }
   .spec-key{ color:var(--steel); text-transform:uppercase; letter-spacing:0.06em; }
-  .spec-val{ text-align:right; }
+  .spec-val{ text-align:right; color:var(--ink); }
 
   .callout{
     border-left:2px solid var(--beacon);
@@ -220,18 +228,6 @@
     margin:24px 0;
     color:var(--ink);
     font-size:15px;
-  }
-
-  .figure{
-    border:1px solid var(--line);
-    background:var(--paper-dim);
-    padding:28px;
-    margin:24px 0;
-    font-family:var(--font-mono);
-    font-size:12px;
-    color:var(--steel);
-    text-align:center;
-    letter-spacing:0.04em;
   }
 
   /* ---------- result stats ---------- */
@@ -244,7 +240,7 @@
     margin:36px 0;
   }
   .results-grid .cell{
-    background:var(--paper);
+    background:var(--panel);
     padding:26px;
   }
   .results-grid .num{
@@ -282,9 +278,40 @@
   }
   .back-link:hover{ color:var(--beacon); }
 
+  /* ---------- title block ---------- */
+  .titleblock{
+    border-top:1px solid var(--line);
+    background:var(--panel);
+  }
+  .titleblock-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;
+    border:1px solid var(--line);
+    margin:28px 0;
+    font-family:var(--font-mono);
+  }
+  .titleblock-cell{
+    padding:14px 16px;
+    border-left:1px solid var(--line);
+  }
+  .titleblock-cell:first-child{ border-left:none; }
+  .titleblock-cell .tb-label{
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--steel);
+    margin-bottom:6px;
+  }
+  .titleblock-cell .tb-value{
+    font-size:12.5px;
+    color:var(--ink);
+    letter-spacing:0.02em;
+  }
+  .titleblock-cell .tb-value.accent{ color:var(--blueprint); }
+
   footer{
     border-top:1px solid var(--line);
-    padding:28px 0;
+    padding:20px 0 32px;
     font-family:var(--font-mono);
     font-size:11.5px;
     color:var(--steel);
@@ -314,6 +341,11 @@
     .datastrip .cell:nth-child(3){ border-left:none; }
     .datastrip .cell{ padding:18px; }
     .results-grid{ grid-template-columns:1fr; }
+    .titleblock-grid{ grid-template-columns:1fr 1fr; }
+    .titleblock-cell{ border-left:none; border-top:1px solid var(--line); }
+    .titleblock-cell:nth-child(1),
+    .titleblock-cell:nth-child(2){ border-top:none; }
+    .titleblock-cell:nth-child(even){ border-left:1px solid var(--line); }
     footer{ flex-direction:column; gap:6px; }
   }
 
@@ -333,33 +365,33 @@
 </header>
 
 <section class="project-hero wrap">
-  <div class="project-code-badge">AX-01 / STRUCTURES &amp; CONTROLS</div>
-  <h1>CubeSat Attitude Control System</h1>
-  <p class="lede">A reaction-wheel attitude determination and control system for a 3U CubeSat, taken from control law derivation through flight software integration and on-orbit tuning.</p>
+  <div class="project-code-badge">AX-01 / PROPULSION — CFD</div>
+  <h1>Axisymmetric 2D LOX/LCH4 Engine Simulation in ANSYS Fluent</h1>
+  <p class="lede">A 2D axisymmetric combustion and nozzle-flow model of a liquid oxygen / liquid methane rocket engine, built to predict chamber wall heat flux and nozzle performance ahead of hot-fire testing.</p>
   <div class="status-row">
-    <span class="status-chip">Lead Controls Engineer</span>
-    <span class="status-chip">MATLAB/Simulink · C · KiCad</span>
-    <span class="status-chip">±0.5° Pointing Accuracy</span>
+    <span class="status-chip">CFD / Propulsion Engineer</span>
+    <span class="status-chip">ANSYS Fluent · Python</span>
+    <span class="status-chip">C* Efficiency within 5% of CEA</span>
   </div>
 </section>
 
 <div class="datastrip">
   <div class="wrap">
     <div class="cell">
-      <div class="num">±0.5°</div>
-      <div class="label">Pointing Accuracy</div>
+      <div class="num">2D</div>
+      <div class="label">Axisymmetric Domain</div>
     </div>
     <div class="cell">
-      <div class="num">3U</div>
-      <div class="label">CubeSat Form Factor</div>
+      <div class="num">~350 psi</div>
+      <div class="label">Chamber Pressure</div>
     </div>
     <div class="cell">
-      <div class="num">4</div>
-      <div class="label">Reaction Wheels</div>
+      <div class="num">3.4:1</div>
+      <div class="label">O/F Mixture Ratio</div>
     </div>
     <div class="cell">
-      <div class="num">8 mo</div>
-      <div class="label">Design to Integration</div>
+      <div class="num">y+ ≈ 1</div>
+      <div class="label">Near-Wall Mesh Resolution</div>
     </div>
   </div>
 </div>
@@ -368,57 +400,59 @@
   <div class="wrap content-grid">
     <div class="reveal">
       <div class="eyebrow">Overview</div>
-      <h2>Keeping a spacecraft pointed where it needs to be.</h2>
-      <p>This project delivered the attitude determination and control system (ADCS) for a 3U CubeSat mission, covering everything from the control law on paper to the flight software running on the bus's microcontroller.</p>
-      <p>The spacecraft needed to reliably point a payload sensor at fixed ground targets and hold that pointing through orbital disturbances, without exceeding the power and mass budget typical of a small satellite bus.</p>
+      <h2>Modeling combustion before committing to hardware.</h2>
+      <p>This project delivered a 2D axisymmetric CFD model of a LOX/LCH4 rocket engine's combustion chamber and converging-diverging nozzle in ANSYS Fluent, used to predict thermal and pressure loads for structural sizing and to characterize nozzle performance ahead of hot-fire testing.</p>
+      <p>Hot-fire testing a methane engine is expensive and slow to iterate on, so the goal was a CFD model accurate enough to size the regenerative cooling channels and estimate performance before committing to hardware.</p>
 
       <h3>Problem</h3>
-      <p>Small satellites are mass- and power-constrained, which limits the actuators and sensors available for attitude control. The mission required <strong>sub-degree pointing accuracy</strong> using a reaction-wheel array sized to fit inside a 3U envelope, with detumble and safe-mode logic that could recover from any initial tip-off rate after deployment.</p>
+      <p>The team needed to predict two things before cutting metal: the <strong>chamber wall heat flux profile</strong>, which drives cooling channel geometry and material selection, and the <strong>nozzle performance</strong> (characteristic velocity and thrust coefficient), which determines whether the design would hit its target specific impulse. Neither could be measured directly without a completed engine.</p>
 
       <h3>Approach</h3>
-      <p>I derived the spacecraft's rotational dynamics and built a quaternion-based control law in Simulink, then validated it against a full 6-DOF orbital simulation including gravity-gradient and residual magnetic disturbance torques.</p>
+      <p>Because the engine geometry and flow field are rotationally symmetric about the thrust axis, I modeled the chamber and nozzle as a 2D axisymmetric domain, cutting mesh size and solve time dramatically versus a full 3D case while preserving the physics that matter for wall heat flux and nozzle performance.</p>
       <ul>
-        <li>Designed a four-wheel pyramid reaction-wheel configuration for full 3-axis control with built-in redundancy</li>
-        <li>Implemented a quaternion feedback controller with a nonlinear detumble mode for post-deployment recovery</li>
-        <li>Fused magnetometer, sun sensor, and gyro data through an extended Kalman filter for attitude determination</li>
-        <li>Ported the control algorithm from Simulink to embedded C and integrated it with the flight software stack</li>
-        <li>Ran hardware-in-the-loop testing on an air-bearing table to validate the controller against real wheel dynamics</li>
+        <li>Built the axisymmetric mesh from the injector face through the nozzle exit, with boundary-layer inflation near the chamber and nozzle walls</li>
+        <li>Modeled CH4/O2 combustion with a finite-rate/eddy-dissipation reaction mechanism under the species transport model</li>
+        <li>Used k-omega SST turbulence closure to capture the shear layer downstream of the injector and the nozzle boundary layer</li>
+        <li>Solved with the pressure-based coupled solver, appropriate for the strong density gradients across the combustion zone and nozzle throat</li>
+        <li>Set injector-face boundary conditions from target chamber pressure and O/F mixture ratio, with convective wall conditions to extract local heat flux</li>
+        <li>Ran a mesh refinement study to converge near-wall y+ to approximately 1 for accurate wall heat transfer prediction</li>
+        <li>Cross-checked chamber temperature and C* against 1D thermochemical (NASA CEA) predictions as a sanity check on the reacting-flow setup</li>
       </ul>
 
-      <div class="callout">The biggest gap between simulation and hardware was wheel friction and stiction near zero speed — closing that gap took as much of the schedule as the original control law derivation.</div>
+      <div class="callout">The largest source of uncertainty wasn't the turbulence model — it was assuming fully pre-mixed, gaseous propellants at the injector face, which skips over real atomization and mixing.</div>
 
       <h3>Results</h3>
-      <p>The system met its pointing requirement in both hardware-in-the-loop testing and post-launch commissioning, with the controller settling within tolerance well inside the allotted slew time.</p>
+      <p>The model produced a wall heat flux profile that was used directly to size the regenerative cooling channels, and matched bulk combustion parameters from the 1D thermochemical prediction closely enough to trust the CFD-derived nozzle performance numbers.</p>
 
       <div class="results-grid">
         <div class="cell">
-          <div class="num">±0.5°</div>
-          <div class="label">Steady-state pointing</div>
+          <div class="num">~5%</div>
+          <div class="label">C* efficiency vs CEA ideal</div>
         </div>
         <div class="cell">
-          <div class="num">&lt;90s</div>
-          <div class="label">Slew &amp; settle time</div>
+          <div class="num">Peak @ Throat</div>
+          <div class="label">Wall heat flux location</div>
         </div>
         <div class="cell">
-          <div class="num">100%</div>
-          <div class="label">Detumble recovery rate</div>
+          <div class="num">1</div>
+          <div class="label">Injector hot streak identified</div>
         </div>
       </div>
 
       <h3>What I'd do differently</h3>
-      <p>Given more schedule margin, I'd characterize wheel friction on the bench earlier rather than folding it in after HIL testing surfaced it — that single change would have compressed the integration timeline noticeably.</p>
+      <p>Given more time, I'd replace the pre-mixed gaseous injector assumption with a spray/atomization model for the liquid propellants — that's the biggest gap between this model and how the engine actually behaves at the injector face, and it's where I'd expect the largest correction to the predicted heat flux and mixing efficiency.</p>
     </div>
 
     <div class="reveal">
       <div class="spec-table">
-        <div class="spec-row"><span class="spec-key">Role</span><span class="spec-val">Lead Controls Eng.</span></div>
-        <div class="spec-row"><span class="spec-key">Duration</span><span class="spec-val">8 months</span></div>
-        <div class="spec-row"><span class="spec-key">Team Size</span><span class="spec-val">4 engineers</span></div>
-        <div class="spec-row"><span class="spec-key">Platform</span><span class="spec-val">3U CubeSat</span></div>
-        <div class="spec-row"><span class="spec-key">Actuators</span><span class="spec-val">4x Reaction Wheels</span></div>
-        <div class="spec-row"><span class="spec-key">Sensors</span><span class="spec-val">Magnetometer, Sun, Gyro</span></div>
-        <div class="spec-row"><span class="spec-key">Software</span><span class="spec-val">Simulink, Embedded C</span></div>
-        <div class="spec-row"><span class="spec-key">Testing</span><span class="spec-val">Air-Bearing HIL Table</span></div>
+        <div class="spec-row"><span class="spec-key">Role</span><span class="spec-val">CFD / Propulsion Eng.</span></div>
+        <div class="spec-row"><span class="spec-key">Propellants</span><span class="spec-val">LOX / LCH4</span></div>
+        <div class="spec-row"><span class="spec-key">Domain</span><span class="spec-val">2D Axisymmetric</span></div>
+        <div class="spec-row"><span class="spec-key">Solver</span><span class="spec-val">ANSYS Fluent</span></div>
+        <div class="spec-row"><span class="spec-key">Combustion Model</span><span class="spec-val">Species Transport, EDC</span></div>
+        <div class="spec-row"><span class="spec-key">Turbulence</span><span class="spec-val">k-omega SST</span></div>
+        <div class="spec-row"><span class="spec-key">Validation</span><span class="spec-val">NASA CEA (1D)</span></div>
+        <div class="spec-row"><span class="spec-key">Post-Processing</span><span class="spec-val">Python</span></div>
       </div>
     </div>
   </div>
@@ -430,6 +464,37 @@
     <a class="back-link" href="../index.html#contact">Get in touch ↗</a>
   </div>
 </section>
+
+<div class="titleblock">
+  <div class="wrap">
+    <div class="titleblock-grid">
+      <div class="titleblock-cell">
+        <div class="tb-label">Title</div>
+        <div class="tb-value accent">Axisymmetric 2D LOX/LCH4 Engine Sim</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Dwg No</div>
+        <div class="tb-value">AX-01</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Rev</div>
+        <div class="tb-value">A</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Scale</div>
+        <div class="tb-value">NTS</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Date</div>
+        <div class="tb-value">2026</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Sheet</div>
+        <div class="tb-value">1 OF 1</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer class="wrap">
   <span>© 2026 Daniel Yu</span>
@@ -456,3 +521,4 @@
 
 </body>
 </html>
+
