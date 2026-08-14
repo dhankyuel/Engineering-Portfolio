@@ -9,25 +9,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #FAFAF8;
-    --paper-dim: #F2F1EC;
-    --ink: #10202B;
-    --blueprint: #2B4C7E;
-    --blueprint-soft: #6E86A6;
-    --steel: #66727D;
-    --beacon: #C1272D;
-    --line: #D9DCDD;
+    /* cyanotype blueprint palette — deep Prussian blue field, paper-white lines */
+    --paper: #0A1B2E;
+    --panel: #0F2439;
+    --panel-hover: #143050;
+    --ink: #E9F1F8;
+    --blueprint: #7FB2E0;
+    --blueprint-dim: #4A7CA8;
+    --line: #1E3E5F;
+    --grid-line: rgba(127,178,224,0.07);
+    --steel: #7E93A8;
+    --beacon: #E2672E;
+    --beacon-dim: #B84F22;
     --font-display: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
-
   html{ scroll-behavior:smooth; }
 
   body{
-    background:var(--paper);
+    background:
+      repeating-linear-gradient(0deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
+      var(--paper);
     color:var(--ink);
     font-family:var(--font-body);
     line-height:1.5;
@@ -35,13 +41,7 @@
   }
 
   a{ color:inherit; text-decoration:none; }
-
-  .wrap{
-    max-width:1120px;
-    margin:0 auto;
-    padding:0 32px;
-  }
-
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
   ::selection{ background:var(--beacon); color:var(--paper); }
 
   /* ---------- corner registration marks ---------- */
@@ -57,9 +57,10 @@
     top:-6px;
     width:14px;
     height:14px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E86A6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2c2.2 2.3 3.4 5.6 3.4 8.8 0 2.3-1.1 4.5-3.4 6.7-2.3-2.2-3.4-4.4-3.4-6.7C8.6 7.6 9.8 4.3 12 2z'/%3E%3Cpath d='M8.6 13.5 6 17M15.4 13.5 18 17'/%3E%3Cpath d='M12 17.5v3.5'/%3E%3C/svg%3E");
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A7CA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2c2.2 2.3 3.4 5.6 3.4 8.8 0 2.3-1.1 4.5-3.4 6.7-2.3-2.2-3.4-4.4-3.4-6.7C8.6 7.6 9.8 4.3 12 2z'/%3E%3Cpath d='M8.6 13.5 6 17M15.4 13.5 18 17'/%3E%3Cpath d='M12 17.5v3.5'/%3E%3C/svg%3E");
     background-repeat:no-repeat;
     background-size:contain;
+    opacity:0.6;
   }
   .section::before{ left:32px; }
   .section::after{ right:32px; transform:scaleX(-1); }
@@ -87,6 +88,7 @@
     font-family:var(--font-display);
     font-weight:600;
     letter-spacing:-0.01em;
+    color:var(--ink);
   }
 
   /* ---------- nav ---------- */
@@ -94,7 +96,7 @@
     position:sticky;
     top:0;
     z-index:50;
-    background:rgba(250,250,248,0.88);
+    background:rgba(10,27,46,0.86);
     backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
   }
@@ -108,7 +110,7 @@
     font-family:var(--font-mono);
     font-size:14px;
     font-weight:600;
-    letter-spacing:0.02em;
+    letter-spacing:0.06em;
   }
   .callsign span{ color:var(--beacon); }
   .navlinks{
@@ -125,7 +127,7 @@
     padding-bottom:3px;
     transition:color .2s ease;
   }
-  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--ink); }
+  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--blueprint); }
   .navlinks a::after{
     content:"";
     position:absolute;
@@ -177,18 +179,19 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    transition:transform .15s ease, background .2s ease, color .2s ease;
+    transition:transform .15s ease, background .2s ease, color .2s ease, border-color .2s ease;
   }
   .btn-primary{
-    background:var(--ink);
-    color:var(--paper);
+    background:var(--beacon);
+    color:#1A0D06;
+    font-weight:600;
   }
-  .btn-primary:hover{ background:var(--beacon); transform:translateY(-1px); }
+  .btn-primary:hover{ background:#F0793E; transform:translateY(-1px); }
   .btn-ghost{
     border:1px solid var(--line);
     color:var(--ink);
   }
-  .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-1px); }
+  .btn-ghost:hover{ border-color:var(--blueprint); color:var(--blueprint); transform:translateY(-1px); }
 
   /* rocket engine static fire signature */
   .launchpad{
@@ -262,6 +265,7 @@
   .datastrip{
     border-top:1px solid var(--line);
     border-bottom:1px solid var(--line);
+    background:var(--panel);
   }
   .datastrip .wrap{
     display:grid;
@@ -277,7 +281,7 @@
   .datastrip .num{
     font-size:26px;
     font-weight:600;
-    color:var(--ink);
+    color:var(--blueprint);
     font-family:var(--font-display);
   }
   .datastrip .label{
@@ -310,7 +314,7 @@
   }
   .spec-row:first-child{ border-top:1px solid var(--line); }
   .spec-key{ color:var(--steel); text-transform:uppercase; letter-spacing:0.06em; }
-  .spec-val{ text-align:right; }
+  .spec-val{ text-align:right; color:var(--ink); }
 
   /* ---------- projects ---------- */
   .project-list{
@@ -321,7 +325,7 @@
     margin-top:44px;
   }
   .project{
-    background:var(--paper);
+    background:var(--panel);
     padding:36px;
     display:grid;
     grid-template-columns:110px 1.1fr 1.3fr;
@@ -331,7 +335,7 @@
     cursor:pointer;
     position:relative;
   }
-  .project:hover{ background:var(--paper-dim); }
+  .project:hover{ background:var(--panel-hover); }
   .project:hover h3{ color:var(--blueprint); }
   .project:hover .project-arrow{ opacity:1; transform:translateX(0); }
   .project-code{
@@ -339,6 +343,7 @@
     font-size:13px;
     color:var(--beacon);
     padding-top:4px;
+    letter-spacing:0.04em;
   }
   .project h3{
     font-size:20px;
@@ -347,6 +352,7 @@
     display:flex;
     align-items:center;
     gap:10px;
+    line-height:1.25;
   }
   .project-arrow{
     font-family:var(--font-mono);
@@ -355,6 +361,7 @@
     opacity:0;
     transform:translateX(-4px);
     transition:opacity .2s ease, transform .2s ease;
+    flex-shrink:0;
   }
   .project p{
     color:var(--steel);
@@ -378,6 +385,7 @@
     letter-spacing:0.05em;
     min-width:70px;
   }
+  .project-specs .row span:last-child{ color:var(--ink); }
 
   /* ---------- skills ---------- */
   .skills-grid{
@@ -457,6 +465,7 @@
     font-size:17px;
     font-weight:600;
     margin-bottom:4px;
+    color:var(--ink);
   }
   .log-body .org{
     font-family:var(--font-mono);
@@ -502,9 +511,42 @@
   .contact-links a:hover{ color:var(--beacon); border-color:var(--beacon); }
   .contact-links a::after{ content:"↗"; font-size:11px; }
 
+  /* ---------- title block (signature element) ---------- */
+  .titleblock{
+    border-top:1px solid var(--line);
+    background:var(--panel);
+    padding:0;
+  }
+  .titleblock .wrap{ padding:0 32px; }
+  .titleblock-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;
+    border:1px solid var(--line);
+    margin:28px 0;
+    font-family:var(--font-mono);
+  }
+  .titleblock-cell{
+    padding:14px 16px;
+    border-left:1px solid var(--line);
+  }
+  .titleblock-cell:first-child{ border-left:none; }
+  .titleblock-cell .tb-label{
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--steel);
+    margin-bottom:6px;
+  }
+  .titleblock-cell .tb-value{
+    font-size:12.5px;
+    color:var(--ink);
+    letter-spacing:0.02em;
+  }
+  .titleblock-cell .tb-value.accent{ color:var(--blueprint); }
+
   footer{
     border-top:1px solid var(--line);
-    padding:28px 0;
+    padding:20px 0 32px;
     font-family:var(--font-mono);
     font-size:11.5px;
     color:var(--steel);
@@ -529,6 +571,7 @@
   /* ---------- responsive ---------- */
   @media (max-width: 860px){
     .wrap{ padding:0 20px; }
+    .titleblock .wrap{ padding:0 20px; }
     .navlinks{ display:none; }
     .hero-grid{ grid-template-columns:1fr; }
     .launchpad{ max-width:220px; margin-top:24px; }
@@ -543,6 +586,11 @@
     .log-entry{ grid-template-columns:16px 1fr; }
     .log-date{ display:none; }
     .log-dot{ justify-content:flex-start; }
+    .titleblock-grid{ grid-template-columns:1fr 1fr; }
+    .titleblock-cell{ border-left:none; border-top:1px solid var(--line); }
+    .titleblock-cell:nth-child(1),
+    .titleblock-cell:nth-child(2){ border-top:none; }
+    .titleblock-cell:nth-child(even){ border-left:1px solid var(--line); }
     footer{ flex-direction:column; gap:6px; }
   }
 
@@ -579,10 +627,10 @@
       <div class="launchpad" id="launchpad">
         <svg viewBox="0 0 340 340" aria-hidden="true">
           <!-- ground -->
-          <line x1="20" y1="300" x2="320" y2="300" stroke="#D9DCDD" stroke-width="1"/>
+          <line x1="20" y1="300" x2="320" y2="300" stroke="#1E3E5F" stroke-width="1"/>
 
           <!-- test stand truss -->
-          <g stroke="#B9C2CB" stroke-width="1.2">
+          <g stroke="#2E5178" stroke-width="1.2">
             <line x1="248" y1="80" x2="248" y2="300"/>
             <line x1="248" y1="110" x2="270" y2="110"/>
             <line x1="248" y1="150" x2="266" y2="150"/>
@@ -591,13 +639,13 @@
           </g>
 
           <!-- hold-down restraints -->
-          <g stroke="#2B4C7E" stroke-width="1.2">
+          <g stroke="#7FB2E0" stroke-width="1.2">
             <line x1="188" y1="200" x2="230" y2="180"/>
             <line x1="188" y1="240" x2="230" y2="228"/>
           </g>
 
           <!-- base -->
-          <rect x="140" y="298" width="60" height="6" fill="#E4E1D6" stroke="#10202B" stroke-width="1"/>
+          <rect x="140" y="298" width="60" height="6" fill="#0F2439" stroke="#7FB2E0" stroke-width="1"/>
 
           <!-- exhaust plume -->
           <g id="smokeGroup">
@@ -610,11 +658,11 @@
 
           <!-- engine under test, fixed to stand -->
           <g id="rocketGroup">
-            <path d="M170 160 C182 175 188 200 188 230 L188 285 L152 285 L152 230 C152 200 158 175 170 160 Z" fill="#FAFAF8" stroke="#10202B" stroke-width="1.6"/>
-            <circle cx="170" cy="205" r="8" fill="none" stroke="#2B4C7E" stroke-width="1.6"/>
-            <path d="M152 260 L134 285 L152 285 Z" fill="#2B4C7E"/>
-            <path d="M188 260 L206 285 L188 285 Z" fill="#2B4C7E"/>
-            <path id="flame" d="M160 285 L170 322 L180 285 Z" fill="#C1272D"/>
+            <path d="M170 160 C182 175 188 200 188 230 L188 285 L152 285 L152 230 C152 200 158 175 170 160 Z" fill="#0A1B2E" stroke="#E9F1F8" stroke-width="1.6"/>
+            <circle cx="170" cy="205" r="8" fill="none" stroke="#7FB2E0" stroke-width="1.6"/>
+            <path d="M152 260 L134 285 L152 285 Z" fill="#7FB2E0"/>
+            <path d="M188 260 L206 285 L188 285 Z" fill="#7FB2E0"/>
+            <path id="flame" d="M160 285 L170 322 L180 285 Z" fill="#E2672E"/>
           </g>
         </svg>
       </div>
@@ -674,16 +722,16 @@
     <h2 class="reveal" style="font-size:30px;">Projects</h2>
 
     <div class="project-list">
-      <a class="project reveal" href="projects/ax-01-cubesat-adcs.html">
+      <a class="project reveal" href="projects/ax-01-lox-lch4-engine-sim.html">
         <div class="project-code">AX-01</div>
         <div>
-          <h3>CubeSat Attitude Control System <span class="project-arrow">→</span></h3>
-          <p>Designed and tuned a reaction-wheel ADCS for a 3U CubeSat, from control law to flight software integration.</p>
+          <h3>Axisymmetric 2D LOX/LCH4 Engine Simulation in ANSYS Fluent <span class="project-arrow">→</span></h3>
+          <p>Built a 2D axisymmetric CFD model of a liquid oxygen / liquid methane engine to predict chamber heat flux and nozzle performance ahead of hot-fire testing.</p>
         </div>
         <div class="project-specs">
-          <div class="row"><span class="k">Role</span><span>Lead Controls Eng.</span></div>
-          <div class="row"><span class="k">Stack</span><span>MATLAB/Simulink, C, KiCad</span></div>
-          <div class="row"><span class="k">Result</span><span>±0.5° pointing accuracy achieved</span></div>
+          <div class="row"><span class="k">Role</span><span>CFD / Propulsion Eng.</span></div>
+          <div class="row"><span class="k">Stack</span><span>ANSYS Fluent, Python</span></div>
+          <div class="row"><span class="k">Result</span><span>C* efficiency predicted within 5% of CEA</span></div>
         </div>
       </a>
     </div>
@@ -784,6 +832,37 @@
   </div>
 </section>
 
+<div class="titleblock">
+  <div class="wrap">
+    <div class="titleblock-grid">
+      <div class="titleblock-cell">
+        <div class="tb-label">Title</div>
+        <div class="tb-value accent">Daniel Yu — Portfolio</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Dwg No</div>
+        <div class="tb-value">DY-001</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Rev</div>
+        <div class="tb-value">A</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Scale</div>
+        <div class="tb-value">NTS</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Date</div>
+        <div class="tb-value">2026</div>
+      </div>
+      <div class="titleblock-cell">
+        <div class="tb-label">Sheet</div>
+        <div class="tb-value">1 OF 1</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="wrap">
   <span>© 2026 Daniel Yu</span>
   <span>Aerospace Engineer — Atlanta, GA</span>
@@ -820,3 +899,4 @@
 
 </body>
 </html>
+
