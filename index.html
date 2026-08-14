@@ -328,8 +328,12 @@
     gap:32px;
     align-items:start;
     transition:background .2s ease;
+    cursor:pointer;
+    position:relative;
   }
   .project:hover{ background:var(--paper-dim); }
+  .project:hover h3{ color:var(--blueprint); }
+  .project:hover .project-arrow{ opacity:1; transform:translateX(0); }
   .project-code{
     font-family:var(--font-mono);
     font-size:13px;
@@ -339,6 +343,18 @@
   .project h3{
     font-size:20px;
     margin-bottom:10px;
+    transition:color .2s ease;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .project-arrow{
+    font-family:var(--font-mono);
+    font-size:16px;
+    color:var(--blueprint);
+    opacity:0;
+    transform:translateX(-4px);
+    transition:opacity .2s ease, transform .2s ease;
   }
   .project p{
     color:var(--steel);
@@ -658,10 +674,10 @@
     <h2 class="reveal" style="font-size:30px;">Projects</h2>
 
     <div class="project-list">
-      <div class="project reveal">
+      <a class="project reveal" href="projects/ax-01-cubesat-adcs.html">
         <div class="project-code">AX-01</div>
         <div>
-          <h3>CubeSat Attitude Control System</h3>
+          <h3>CubeSat Attitude Control System <span class="project-arrow">→</span></h3>
           <p>Designed and tuned a reaction-wheel ADCS for a 3U CubeSat, from control law to flight software integration.</p>
         </div>
         <div class="project-specs">
@@ -669,7 +685,7 @@
           <div class="row"><span class="k">Stack</span><span>MATLAB/Simulink, C, KiCad</span></div>
           <div class="row"><span class="k">Result</span><span>±0.5° pointing accuracy achieved</span></div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -804,5 +820,3 @@
 
 </body>
 </html>
-
-
