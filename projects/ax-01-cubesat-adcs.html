@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CubeSat Attitude Control System — Daniel Yu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAFAF8;
+    --paper-dim: #F2F1EC;
+    --ink: #10202B;
+    --blueprint: #2B4C7E;
+    --blueprint-soft: #6E86A6;
+    --steel: #66727D;
+    --beacon: #C1272D;
+    --line: #D9DCDD;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+  ::selection{ background:var(--beacon); color:var(--paper); }
+
+  .section{
+    position:relative;
+    border-top:1px solid var(--line);
+    padding:80px 0;
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blueprint);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:16px;
+    height:1px;
+    background:var(--beacon);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(250,250,248,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px;
+  }
+  .callsign{
+    font-family:var(--font-mono);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .callsign span{ color:var(--beacon); }
+  .navlinks{
+    display:flex;
+    gap:28px;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .navlinks a{
+    color:var(--steel);
+    position:relative;
+    padding-bottom:3px;
+    transition:color .2s ease;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--ink); }
+  .navlinks a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:1px;
+    background:var(--beacon);
+    transition:width .25s ease;
+  }
+  .navlinks a:hover::after{ width:100%; }
+
+  /* ---------- project hero ---------- */
+  .project-hero{
+    padding:64px 0 56px;
+  }
+  .project-code-badge{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--beacon);
+    letter-spacing:0.06em;
+    margin-bottom:14px;
+  }
+  .project-hero h1{
+    font-size:clamp(32px, 4.5vw, 50px);
+    line-height:1.06;
+    max-width:18ch;
+  }
+  .project-hero p.lede{
+    margin-top:20px;
+    max-width:60ch;
+    font-size:17px;
+    color:var(--steel);
+  }
+  .status-row{
+    display:flex;
+    gap:14px;
+    margin-top:28px;
+    flex-wrap:wrap;
+  }
+  .status-chip{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:8px 14px;
+    border:1px solid var(--line);
+    color:var(--steel);
+  }
+
+  /* ---------- spec strip ---------- */
+  .datastrip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .datastrip .wrap{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    padding:0;
+  }
+  .datastrip .cell{
+    padding:22px 24px;
+    border-left:1px solid var(--line);
+    font-family:var(--font-mono);
+  }
+  .datastrip .cell:first-child{ border-left:none; padding-left:0; }
+  .datastrip .num{
+    font-size:22px;
+    font-weight:600;
+    color:var(--ink);
+    font-family:var(--font-display);
+  }
+  .datastrip .label{
+    font-size:11px;
+    color:var(--steel);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-top:4px;
+  }
+
+  /* ---------- content ---------- */
+  .content-grid{
+    display:grid;
+    grid-template-columns:1.4fr 0.9fr;
+    gap:64px;
+  }
+  .content-grid h2{ font-size:26px; margin-bottom:16px; }
+  .content-grid h3{ font-size:16px; margin:28px 0 10px; color:var(--blueprint); }
+  .content-grid p{ color:var(--steel); margin-bottom:14px; max-width:64ch; }
+  .content-grid p strong{ color:var(--ink); font-weight:600; }
+  .content-grid ul{ color:var(--steel); margin:0 0 14px 20px; }
+  .content-grid li{ margin-bottom:6px; }
+
+  .spec-table{
+    font-family:var(--font-mono);
+    font-size:13px;
+    position:sticky;
+    top:96px;
+  }
+  .spec-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    gap:16px;
+  }
+  .spec-row:first-child{ border-top:1px solid var(--line); }
+  .spec-key{ color:var(--steel); text-transform:uppercase; letter-spacing:0.06em; }
+  .spec-val{ text-align:right; }
+
+  .callout{
+    border-left:2px solid var(--beacon);
+    padding:4px 0 4px 20px;
+    margin:24px 0;
+    color:var(--ink);
+    font-size:15px;
+  }
+
+  .figure{
+    border:1px solid var(--line);
+    background:var(--paper-dim);
+    padding:28px;
+    margin:24px 0;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--steel);
+    text-align:center;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- result stats ---------- */
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin:36px 0;
+  }
+  .results-grid .cell{
+    background:var(--paper);
+    padding:26px;
+  }
+  .results-grid .num{
+    font-family:var(--font-display);
+    font-size:26px;
+    font-weight:600;
+    color:var(--blueprint);
+  }
+  .results-grid .label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--steel);
+    margin-top:6px;
+  }
+
+  /* ---------- prev/next nav ---------- */
+  .project-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:36px 0;
+  }
+  .back-link{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--steel);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:color .2s ease;
+  }
+  .back-link:hover{ color:var(--beacon); }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 0;
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--steel);
+    display:flex;
+    justify-content:space-between;
+    letter-spacing:0.04em;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  @media (max-width: 860px){
+    .wrap{ padding:0 20px; }
+    .navlinks{ display:none; }
+    .content-grid{ grid-template-columns:1fr; gap:32px; }
+    .spec-table{ position:static; }
+    .datastrip .wrap{ grid-template-columns:1fr 1fr; }
+    .datastrip .cell:nth-child(3){ border-left:none; }
+    .datastrip .cell{ padding:18px; }
+    .results-grid{ grid-template-columns:1fr; }
+    footer{ flex-direction:column; gap:6px; }
+  }
+
+  :focus-visible{ outline:2px solid var(--beacon); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="callsign">D. YU <span>/ AE</span></div>
+    <div class="navlinks">
+      <a href="../index.html#projects">← All Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="project-hero wrap">
+  <div class="project-code-badge">AX-01 / STRUCTURES &amp; CONTROLS</div>
+  <h1>CubeSat Attitude Control System</h1>
+  <p class="lede">A reaction-wheel attitude determination and control system for a 3U CubeSat, taken from control law derivation through flight software integration and on-orbit tuning.</p>
+  <div class="status-row">
+    <span class="status-chip">Lead Controls Engineer</span>
+    <span class="status-chip">MATLAB/Simulink · C · KiCad</span>
+    <span class="status-chip">±0.5° Pointing Accuracy</span>
+  </div>
+</section>
+
+<div class="datastrip">
+  <div class="wrap">
+    <div class="cell">
+      <div class="num">±0.5°</div>
+      <div class="label">Pointing Accuracy</div>
+    </div>
+    <div class="cell">
+      <div class="num">3U</div>
+      <div class="label">CubeSat Form Factor</div>
+    </div>
+    <div class="cell">
+      <div class="num">4</div>
+      <div class="label">Reaction Wheels</div>
+    </div>
+    <div class="cell">
+      <div class="num">8 mo</div>
+      <div class="label">Design to Integration</div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap content-grid">
+    <div class="reveal">
+      <div class="eyebrow">Overview</div>
+      <h2>Keeping a spacecraft pointed where it needs to be.</h2>
+      <p>This project delivered the attitude determination and control system (ADCS) for a 3U CubeSat mission, covering everything from the control law on paper to the flight software running on the bus's microcontroller.</p>
+      <p>The spacecraft needed to reliably point a payload sensor at fixed ground targets and hold that pointing through orbital disturbances, without exceeding the power and mass budget typical of a small satellite bus.</p>
+
+      <h3>Problem</h3>
+      <p>Small satellites are mass- and power-constrained, which limits the actuators and sensors available for attitude control. The mission required <strong>sub-degree pointing accuracy</strong> using a reaction-wheel array sized to fit inside a 3U envelope, with detumble and safe-mode logic that could recover from any initial tip-off rate after deployment.</p>
+
+      <h3>Approach</h3>
+      <p>I derived the spacecraft's rotational dynamics and built a quaternion-based control law in Simulink, then validated it against a full 6-DOF orbital simulation including gravity-gradient and residual magnetic disturbance torques.</p>
+      <ul>
+        <li>Designed a four-wheel pyramid reaction-wheel configuration for full 3-axis control with built-in redundancy</li>
+        <li>Implemented a quaternion feedback controller with a nonlinear detumble mode for post-deployment recovery</li>
+        <li>Fused magnetometer, sun sensor, and gyro data through an extended Kalman filter for attitude determination</li>
+        <li>Ported the control algorithm from Simulink to embedded C and integrated it with the flight software stack</li>
+        <li>Ran hardware-in-the-loop testing on an air-bearing table to validate the controller against real wheel dynamics</li>
+      </ul>
+
+      <div class="callout">The biggest gap between simulation and hardware was wheel friction and stiction near zero speed — closing that gap took as much of the schedule as the original control law derivation.</div>
+
+      <h3>Results</h3>
+      <p>The system met its pointing requirement in both hardware-in-the-loop testing and post-launch commissioning, with the controller settling within tolerance well inside the allotted slew time.</p>
+
+      <div class="results-grid">
+        <div class="cell">
+          <div class="num">±0.5°</div>
+          <div class="label">Steady-state pointing</div>
+        </div>
+        <div class="cell">
+          <div class="num">&lt;90s</div>
+          <div class="label">Slew &amp; settle time</div>
+        </div>
+        <div class="cell">
+          <div class="num">100%</div>
+          <div class="label">Detumble recovery rate</div>
+        </div>
+      </div>
+
+      <h3>What I'd do differently</h3>
+      <p>Given more schedule margin, I'd characterize wheel friction on the bench earlier rather than folding it in after HIL testing surfaced it — that single change would have compressed the integration timeline noticeably.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="spec-table">
+        <div class="spec-row"><span class="spec-key">Role</span><span class="spec-val">Lead Controls Eng.</span></div>
+        <div class="spec-row"><span class="spec-key">Duration</span><span class="spec-val">8 months</span></div>
+        <div class="spec-row"><span class="spec-key">Team Size</span><span class="spec-val">4 engineers</span></div>
+        <div class="spec-row"><span class="spec-key">Platform</span><span class="spec-val">3U CubeSat</span></div>
+        <div class="spec-row"><span class="spec-key">Actuators</span><span class="spec-val">4x Reaction Wheels</span></div>
+        <div class="spec-row"><span class="spec-key">Sensors</span><span class="spec-val">Magnetometer, Sun, Gyro</span></div>
+        <div class="spec-row"><span class="spec-key">Software</span><span class="spec-val">Simulink, Embedded C</span></div>
+        <div class="spec-row"><span class="spec-key">Testing</span><span class="spec-val">Air-Bearing HIL Table</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap project-nav">
+    <a class="back-link" href="../index.html#projects">← Back to all projects</a>
+    <a class="back-link" href="../index.html#contact">Get in touch ↗</a>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 Daniel Yu</span>
+  <span>Aerospace Engineer — Atlanta, GA</span>
+</footer>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+</script>
+
+</body>
+</html>
